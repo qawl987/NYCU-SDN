@@ -33,4 +33,6 @@ configure-network: clean-ports
 		ipaddress=$$(echo $$entry | cut -d= -f2); \
 		sudo ovs-docker add-port $(BRIDGE) OVSbr $$container --ipaddress=$$ipaddress --gateway=$(GATEWAY); \
 	done
+	sudo ovs-vsctl set-controller ovs-bridge tcp:172.17.0.1:6653
+	sudo ovs-vsctl set bridge ovs-bridge protocols=OpenFlow14
 	sudo ip addr add 172.20.0.1/24 dev ovs-bridge
