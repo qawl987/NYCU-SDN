@@ -1,4 +1,9 @@
 networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.10.0.0/16
   R1h1br:
     driver: bridge
     ipam:
@@ -34,10 +39,6 @@ networks:
     ipam:
       config:
         - subnet: 172.23.0.0/16
-  # OVSbr:
-  #   ipam:
-  #     config:
-  #       - subnet: 172.20.0.0/16
 
 services:
   onos:
@@ -96,8 +97,8 @@ services:
         ipv4_address: 172.18.0.2
       R1R2br:
         ipv4_address: 172.19.0.2
-      # OVSbr:
-      #   ipv4_address: 172.20.0.2
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./config/daemons:/etc/frr/daemons
       - ./config/R1/frr.conf:/etc/frr/frr.conf

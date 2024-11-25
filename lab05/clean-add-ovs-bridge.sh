@@ -19,5 +19,5 @@ done
 
 # Re-add ports
 for container in "${!containers[@]}"; do
-  sudo ovs-docker add-port $BRIDGE OVSbr $container --ipaddress=${containers[$container]}
+  sudo ovs-docker add-port $BRIDGE OVSbr $container --ipaddress=${containers[$container]} --gateway=$GATEWAY
 done
