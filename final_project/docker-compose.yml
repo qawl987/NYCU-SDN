@@ -1,11 +1,11 @@
 services:
   onos:
-    image: onosproject/onos:2.7.0
+    image: onosproject/onos:2.7-latest
     container_name: onos
     hostname: onos
     privileged: true
     environment:
-      - ONOS_APPS=drivers,fpm,openflow,gui2,fwd
+      - ONOS_APPS=drivers,fpm,gui2,hostprovider,lldpprovider,openflow,openflow-base,optical-model,route-service
     ports:
       - "2620:2620"
       - "6653:6653"
@@ -14,16 +14,53 @@ services:
     tty: true
     stdin_open: true
 
-  R1:
-    image: sdnfv-final-frr
-    container_name: R1
-    hostname: R1
+  h1:
+    image: host
+    container_name: h1
     privileged: true
-    sysctls:
-      - net.ipv4.ip_forward=1
+    build:
+      context: ./config
+      dockerfile: host.Dockerfile
     cap_add:
       - NET_ADMIN
       - NET_BROADCAST
+    network_mode: "none"
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - |
+        sleep 365d
+  h2:
+    image: host
+    container_name: h2
+    privileged: true
+    build:
+      context: ./config
+      dockerfile: host.Dockerfile
+    cap_add:
+      - NET_ADMIN
+      - NET_BROADCAST
+    network_mode: "none"
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - |
+        sleep 365d
+  R1:
+    image: frr
+    container_name: R1
+    hostname: R1
+    build:
+      context: ./config
+      dockerfile: frr.Dockerfile
+    privileged: true
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv6.conf.all.disable_ipv6=0 # 啟用 IPv6
+      - net.ipv6.conf.all.forwarding=1 # 啟用 IPv6 forwarding
+      - net.ipv6.conf.default.forwarding=1 # 設置默認 forwarding
+    cap_add:
+      - NET_ADMIN
+      - NET_BROADCAST
+    network_mode: "none"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -31,15 +68,22 @@ services:
       - ./config/R1/frr.conf:/etc/frr/frr.conf
 
   R2:
-    image: sdnfv-final-frr
+    image: frr
     container_name: R2
     hostname: R2
+    build:
+      context: ./config
+      dockerfile: frr.Dockerfile
     privileged: true
     sysctls:
       - net.ipv4.ip_forward=1
+      - net.ipv6.conf.all.disable_ipv6=0 # 啟用 IPv6
+      - net.ipv6.conf.all.forwarding=1 # 啟用 IPv6 forwarding
+      - net.ipv6.conf.default.forwarding=1 # 設置默認 forwarding
     cap_add:
       - NET_ADMIN
       - NET_BROADCAST
+    network_mode: "none"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

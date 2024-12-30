@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nycu.winlab.proxyarp;
+package nycu.winlab.bridge;
 
 public interface SomeInterface {
 

@@ -23,8 +23,8 @@
         <version>2.7.0</version>
     </parent>
 
-    <groupId>nycu.winlab.proxyarp</groupId>
-    <artifactId>ProxyArp</artifactId>
+    <groupId>nycu.winlab</groupId>
+    <artifactId>vrouter</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
@@ -32,13 +32,13 @@
     <url>http://onosproject.org</url>
 
     <properties>
-        <onos.app.name>proxyarp</onos.app.name>
+        <onos.app.name>vrouter</onos.app.name>
         <onos.app.title>Foo App</onos.app.title>
         <onos.app.origin>Foo, Inc.</onos.app.origin>
         <onos.app.category>default</onos.app.category>
         <onos.app.url>http://onosproject.org</onos.app.url>
         <onos.app.readme>ONOS OSGi bundle archetype.</onos.app.readme>
-       
+        <onos.app.requires>org.onosproject.fpm</onos.app.requires>
     </properties>
 
     <dependencies>
@@ -69,6 +69,12 @@
             <version>${onos.version}</version>
             <scope>test</scope>
             <classifier>tests</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onosproject</groupId>
+            <artifactId>onos-apps-route-service-api</artifactId>
+            <version>2.7.0</version>
         </dependency>
     </dependencies>
 

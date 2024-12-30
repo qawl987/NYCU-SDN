@@ -1,0 +1,54 @@
+{
+    "ports": {
+        "of:0000000000000001/5": {
+            "interfaces": [
+                {
+                    "name": "intf1",
+                    "ips": [
+                        "192.168.63.1/24",
+                        "fd63::1/64"
+                    ]
+                }
+            ]
+        },
+        "of:00008eaa1988954b/3": {
+            "interfaces": [
+                {
+                    "name": "intf2",
+                    "ips": [
+                        "192.168.70.11/24",
+                        "fd70::11/64"
+                    ]
+                }
+            ]
+        }
+    },
+    "apps": {
+        "nycu.winlab.vrouter": {
+            "router": {
+                "vrrouting": [
+                    "of:0000000000000001/2",
+                    "of:0000000000000001/3"
+                ],
+                "vrrouting-mac": "22:32:dd:a7:9b:7e",
+                "gateway-ipv4": "172.16.11.254",
+                "gateway-ipv6": "2a0b:4e07:c4:11::68",
+                "gateway-mac": "00:00:00:00:00:11",
+                "v4-peers": [
+                    "192.168.63.2",
+                    "192.168.70.253"
+                ],
+                "v6-peers": [
+                    "fd63::2",
+                    "fd70::fe"
+                ]
+            }
+        },
+        "nycu.winlab.bridge": {
+            "virtual-arp": {
+                "virtual-ip4": "172.16.12.254",
+                "virtual-mac": "00:00:00:00:00:01"
+            }
+        }
+    }
+}
