@@ -49,7 +49,6 @@ topo:
 	sudo ovs-vsctl set-controller ovs2 tcp:192.168.100.1:6653
    
 
-	
 	# sudo ip netns exec R1 route add default gw 192.168.100.1
 
 	# vethovs1R1_63 vethovs1R1_70 vethovs1R1_16 vethovs1R1_100
@@ -137,6 +136,29 @@ topo:
 	docker exec -it h2 ip r add default via 172.17.$(stu_id).1
 	docker exec -it h2 ip -6 r add default via 2a0b:4e07:c4:1$(stu_id)::1
 
+	# Below for Peer vxlan transmit
+	sudo ovs-vsctl add-port ovs2 TO_10 -- set interface TO_10 type=vxlan options:remote_ip=192.168.61.10 options:local_ip=192.168.61.$(stu_id)
+	sudo ovs-vsctl add-port ovs2 TO_12 -- set interface TO_12 type=vxlan options:remote_ip=192.168.61.12 options:local_ip=192.168.61.$(stu_id)
+
+	# link ovs1 and R1 with 192.168.64.XX
+	sudo ip link add vethovs1R1_10 type veth peer name vethovs110
+	sudo ip link set vethovs1R1_10 up
+
+	sudo ip link set vethovs110 up
+	sudo ovs-vsctl add-port ovs1 vethovs1R1_10
+	sudo ip link set vethovs110 netns R1
+	sudo ip netns exec R1 ip addr add 192.168.66.11/24 dev vethovs110
+	sudo ip netns exec R1 ip link set vethovs110 up
+    
+
+	# link ovs1 and R1 with 192.168.66.XX
+	sudo ip link add vethovs1R1_12 type veth peer name vethovs112
+	sudo ip link set vethovs1R1_12 up
+	sudo ip link set vethovs112 up
+	sudo ovs-vsctl add-port ovs1 vethovs1R1_12
+	sudo ip link set vethovs112 netns R1
+	sudo ip netns exec R1 ip addr add 192.168.65.11/24 dev vethovs112
+	sudo ip netns exec R1 ip link set vethovs112 up
 ping:
 	./ping.sh
 
@@ -199,6 +221,8 @@ clean: uninstall-vrouter uninstall-bridge
 	# sudo ip l del vethovs2h1 
 	-sudo ip l del veth0 
 	-sudo ip l del vethOVS1OVS2
+	-sudo ip l del vethovs1R1_10
+	-sudo ip l del vethovs1R1_12
 
 	@basename -a /sys/class/net/veth* | grep -e '\([Rh][0-9]\)\{2\}' | xargs -I {} ip l del {} 2>/dev/null | true
 
