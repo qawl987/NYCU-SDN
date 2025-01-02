@@ -107,3 +107,4 @@ arpTable.put(Ip4Address.valueOf("192.168.70.11"), MacAddress.valueOf("1E:35:A3:7
 ### Notes for viewers
 1. Bridge in project do proxy arp quest, because we can't handle two packetprocessor handle same ipv4 packet problem, so we put bridge app function in vrouter app.
 2. Add intent key in vrouter app, so you can use key to check exist or not, so you don't install intent rule every packet-in and then overwrite the last intent.(If the Intent rule establish slow due to path far, then flush intent would make ping fail)
+3. Vxlan to teammate part is in the commit 867b1e9 may wrong, since it doesn't test during demo. Our private test sometime fail due to above reason(intent to teammate take time and next ping arrive so fresh the before intent rule).
