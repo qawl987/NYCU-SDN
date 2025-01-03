@@ -143,7 +143,6 @@ topo:
 	# link ovs1 and R1 with 192.168.64.XX
 	sudo ip link add vethovs1R1_10 type veth peer name vethovs110
 	sudo ip link set vethovs1R1_10 up
-
 	sudo ip link set vethovs110 up
 	sudo ovs-vsctl add-port ovs1 vethovs1R1_10
 	sudo ip link set vethovs110 netns R1
